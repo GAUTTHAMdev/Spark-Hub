@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 
 class TestCog(commands.Cog):
@@ -6,10 +7,17 @@ class TestCog(commands.Cog):
 
     @commands.command()
     async def apitest(self, ctx):
-        # Reuse the shared session stored in bot
-        async with self.bot.http_session.get("https://api.github.com") as response:
-            data = await response.json()
-            await ctx.send(f"GitHub API says: {data.get('current_user_url', 'no response')}")
+        """Test API call with error handling"""
+        try:
+            # Make an API call to a stable test endpoint
+            async with self.bot.http_session.get("https://httpbin.org/json") as response:
+                if response.status != 200:
+                    await ctx.send(f"API error: HTTP {response.status}")
+                    return
+                data = await response.json()
+                await ctx.send(f"Success: {data}")
+        except Exception as e:
+            await ctx.send(f"API request failed: {e}")
 
 async def setup(bot):
     await bot.add_cog(TestCog(bot))
