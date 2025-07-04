@@ -7,9 +7,8 @@ class TestCog(commands.Cog):
 
     @commands.command()
     async def apitest(self, ctx):
-        """Test API call with error handling"""
+        """Test an API call with proper error handling"""
         try:
-            # Make an API call to a stable test endpoint
             async with self.bot.http_session.get("https://httpbin.org/json") as response:
                 if response.status != 200:
                     await ctx.send(f"API error: HTTP {response.status}")
